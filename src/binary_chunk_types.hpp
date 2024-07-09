@@ -14,6 +14,7 @@
 #define LUA_DECOMPILER_BINARY_CHUNK_TYPES_HPP
 
 #include <stdint.h>
+#include <vector>
 
 typedef uint8_t byte;
 
@@ -29,6 +30,14 @@ const int    LUA_NUMBER_SIZE  = 8;
 const int    LUAC_INT         = 0x5678;
 const double LUAC_NUM         = 370.5;
 
+
+const byte TAG_NIL       = 0x00;
+const byte TAG_BOOLEAN   = 0x01;
+const byte TAG_NUMBER    = 0x03;
+const byte TAG_INTEGER   = 0x13;
+const byte TAG_SHORT_STR = 0x04;
+const byte TAG_LONG_STR  = 0x14;
+
 struct Header {
     byte    signature[4];    // signature, magic number:0x1B4C7561
     byte    version;         // version, major_ver * 16 + minor_ver
@@ -41,6 +50,41 @@ struct Header {
     byte    luaNumberSize;   // lua double number size, usually 8 bytes
     int64_t luacInt;         // LUAC_INT, 0x5678(size depends on lua Integer size) to set big-end or small-end
     double  luacNum;         // LUAC_NUM, 370.5(size depends on lua double size) to check float format, usually IEEE 754
+};
+
+enum class Constant {
+    Nil,
+    Boolean,
+    Number,
+    Integer,
+    Str
+};
+
+struct LocalVar {
+    char*    varName;
+    uint32_t startPc;
+    uint32_t endPc;
+};
+
+struct UpValue {
+    byte Instack;
+    byte Idx;
+};
+
+struct Prototype {
+    char*                   source;
+    uint32_t                lineDefined;
+    uint32_t                lastLineDefined;
+    byte                    numParams;
+    byte                    isVararg;
+    byte                    maxStackSize;
+    std::vector<uint32_t>   code;
+    std::vector<Constant>   constants;
+    std::vector<UpValue>    upValues;
+    std::vector<Prototype*> prototypes;
+    std::vector<uint32_t>   lineInfo;
+    std::vector<LocalVar>   LocVars;
+    std::vector<char*>      upValueNames;
 };
 
 struct binaryChunk {
