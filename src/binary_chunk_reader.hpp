@@ -19,7 +19,7 @@ class BinaryChunkReader {
 private:
     byte* _data;
 
-private:
+public:
     byte ReadByte() {
         byte b = *_data;
         _data  += 1;
@@ -71,8 +71,10 @@ private:
 
 public:
 
+    explicit BinaryChunkReader(byte* data) : _data(data) { }
+
     void CheckHeader() {
-        if((char*)ReadBytes(4) != LUA_SIGNATURE){
+        if(strcmp((char*)ReadBytes(4), LUA_SIGNATURE) != 0){
             throw "not a precompiled chunk!";
         }
         else if(ReadByte() != LUAC_VERSION){
@@ -105,7 +107,7 @@ public:
         else if(ReadLuaNumber() != LUAC_NUM){
             throw "float format mismatch!";
         }
-        
+
     }
 };
 
