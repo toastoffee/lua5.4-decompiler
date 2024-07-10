@@ -77,33 +77,24 @@ public:
     explicit BinaryChunkReader(byte* data) : _data(data) { }
 
     void CheckHeader() {
-        if(strcmp((char*)ReadBytes(4), LUA_SIGNATURE) != 0){
-            throw "not a precompiled chunk!";
-        }
-        else if(ReadByte() != LUAC_VERSION){
-            throw "version mismatch!";
-        }
-        else if(ReadByte() != LUAC_FORMAT){
-            throw "format mismatch!";
-        }
-        else if(strcmp((char*)ReadBytes(6), LUAC_DATA) != 0){
-            throw "corrupted!";
-        }
-        else if(ReadByte() != INSTRUCTION_SIZE){
-            throw "instruction size mismatch!";
-        }
-        else if(ReadByte() != LUA_INTEGER_SIZE){
-            throw "lua_Integer size mismatch!";
-        }
-        else if(ReadByte() != LUA_NUMBER_SIZE){
-            throw "lua_Number size mismatch!";
-        }
-        else if(ReadLuaInteger() != LUAC_INT){
-            throw "endianness mismatch!";
-        }
-        else if(ReadLuaNumber() != LUAC_NUM){
-            throw "float format mismatch!";
-        }
+
+        assert(strcmp((char*)ReadBytes(4), LUA_SIGNATURE) == 0 && "not a precompiled chunk!");
+
+        assert(ReadByte() == LUAC_VERSION && "version mismatch!");
+
+        assert(ReadByte() == LUAC_FORMAT && "format mismatch!");
+
+        assert(strcmp((char*)ReadBytes(6), LUAC_DATA) == 0 && "corrupted!");
+
+        assert(ReadByte() == INSTRUCTION_SIZE && "instruction size mismatch!");
+
+        assert(ReadByte() == LUA_INTEGER_SIZE && "lua_Integer size mismatch!");
+
+        assert(ReadByte() == LUA_NUMBER_SIZE && "lua_Number size mismatch!");
+
+        assert(ReadLuaInteger() == LUAC_INT && "endianness mismatch");
+
+        assert(ReadLuaNumber() == LUAC_NUM && "float format mismatch!");
 
     }
 };
