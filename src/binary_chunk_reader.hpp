@@ -19,7 +19,7 @@ class BinaryChunkReader {
 private:
     byte* _data;
 
-public:
+private:
     byte ReadByte() {
         byte b = *_data;
         _data  += 1;
@@ -53,7 +53,7 @@ public:
         return f;
     }
 
-    const char* ReadString(){
+    char* ReadString(){
         uint8_t size = ReadByte();
         if(size == 0){
             return "";
@@ -71,6 +71,32 @@ public:
         _data += n;
         return bytes;
     };
+
+    Constant ReadConstant(){
+        switch(ReadByte()){
+            case TAG_NIL:       return Constant::Nil;
+            case TAG_BOOLEAN:   return 
+        }
+    }
+
+    std::vector<uint32_t>& ReadCode(){
+        std::vector<uint32_t> codes;
+
+        uint32_t size = ReadUint32();
+        for (int i = 0; i < size; ++i) {
+            codes.push_back(ReadUint32());
+        }
+        return codes;
+    }
+
+    std::vector<Constant>& ReadConstants(){
+        std::vector<Constant> constants;
+
+        uint32_t size = ReadUint32();
+        for(int i = 0; i < size; ++i){
+            constants.push_back()
+        }
+    }
 
 public:
 
@@ -95,7 +121,24 @@ public:
         assert(ReadLuaInteger() == LUAC_INT && "endianness mismatch");
 
         assert(ReadLuaNumber() == LUAC_NUM && "float format mismatch!");
+    }
 
+    Prototype* ReadPrototype(char *parentSource) {
+        char *source = ReadString();
+
+        if(strlen(source) == 0){
+            source = parentSource;
+        }
+
+        Prototype* ret = new Prototype{
+            .source = source,
+            .lineDefined = ReadUint32(),
+            .lastLineDefined = ReadUint32(),
+            .numParams = ReadByte(),
+            .isVararg = ReadByte(),
+            .maxStackSize = ReadByte(),
+
+        };
     }
 };
 
