@@ -229,6 +229,7 @@ public:
             .numParams = ReadByte(),
             .isVararg = ReadByte(),
             .maxStackSize = ReadByte(),
+            .code = ReadCode(),
             .constants = ReadConstants(),
             .upValues = ReadUpValues(),
             .prototypes = ReadPrototypes(source),
