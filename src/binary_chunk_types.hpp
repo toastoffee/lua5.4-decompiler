@@ -95,7 +95,7 @@ struct Prototype {
     std::vector<UpValue>    upValues;
     std::vector<Prototype*> prototypes;
     std::vector<uint32_t>   lineInfo;
-    std::vector<LocalVar>   LocVars;
+    std::vector<LocalVar>   locVars;
     std::vector<char*>      upValueNames;
 };
 

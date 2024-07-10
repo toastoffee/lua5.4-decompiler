@@ -23,6 +23,7 @@ int main() {
     BinaryChunkReader reader((byte*) source);
 
     reader.CheckHeader();
+    Prototype* proto = reader.ReadPrototype();
 
     return 0;
 }

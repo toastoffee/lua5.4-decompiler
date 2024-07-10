@@ -138,6 +138,58 @@ private:
         return upValues;
     }
 
+    std::vector<Prototype*> ReadPrototypes(char *parentSource) {
+        std::vector<Prototype*> protos;
+
+        uint32_t size = ReadUint32();
+
+        for (int i = 0; i < size; ++i) {
+            protos.push_back(ReadPrototype(parentSource));
+        }
+
+        return protos;
+    }
+
+    std::vector<uint32_t> ReadLineInfo() {
+        std::vector<uint32_t> lineInfos;
+
+        uint32_t size = ReadUint32();
+
+        for (int i = 0; i < size; ++i) {
+            lineInfos.push_back(ReadUint32());
+        }
+
+        return lineInfos;
+    }
+
+    std::vector<LocalVar> ReadLocVars() {
+        std::vector<LocalVar> locVars;
+
+        uint32_t size = ReadUint32();
+
+        for (int i = 0; i < size; ++i) {
+            locVars.push_back(LocalVar{
+                .varName = ReadString(),
+                .startPc = ReadUint32(),
+                .endPc = ReadUint32()
+            });
+        }
+
+        return locVars;
+    }
+
+    std::vector<char*> ReadUpValueNames() {
+        std::vector<char*> upValueNames;
+
+        uint32_t size = ReadUint32();
+
+        for (int i = 0; i < size; ++i) {
+            upValueNames.push_back(ReadString());
+        }
+
+        return upValueNames;
+    }
+
 public:
 
     explicit BinaryChunkReader(byte* data) : _data(data) { }
@@ -163,7 +215,7 @@ public:
         assert(ReadLuaNumber() == LUAC_NUM && "float format mismatch!");
     }
 
-    Prototype* ReadPrototype(char *parentSource) {
+    Prototype* ReadPrototype(char *parentSource = "") {
         char *source = ReadString();
 
         if(strlen(source) == 0){
@@ -179,9 +231,13 @@ public:
             .maxStackSize = ReadByte(),
             .constants = ReadConstants(),
             .upValues = ReadUpValues(),
-            .prototypes = ReadPrototype(source),
-
+            .prototypes = ReadPrototypes(source),
+            .lineInfo = ReadLineInfo(),
+            .locVars = ReadLocVars(),
+            .upValueNames = ReadUpValueNames()
         };
+
+        return ret;
     }
 };
 
