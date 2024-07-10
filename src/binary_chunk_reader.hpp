@@ -74,12 +74,35 @@ private:
 
     Constant ReadConstant(){
         switch(ReadByte()){
-            case TAG_NIL:       return Constant::Nil;
-            case TAG_BOOLEAN:   return 
+            case TAG_NIL: {
+                return {ConstantType::Nil, nullptr, 0};
+            }
+            case TAG_BOOLEAN:{
+                bool b = ReadByte() != 0;
+                return {ConstantType::Boolean, &b, sizeof(bool)};
+            }
+            case TAG_INTEGER:{
+                int64_t i = ReadLuaInteger();
+                return{ ConstantType::Integer, &i, sizeof(int64_t)};
+            }
+            case TAG_NUMBER:{
+                double d = ReadLuaNumber();
+                return{ConstantType::Number, &d, sizeof(double)};
+            }
+            case TAG_SHORT_STR:{
+                char *s = ReadString();
+                return{ConstantType::Str, s, (int)strlen(s)};
+            }
+            case TAG_LONG_STR:{
+                char *s = ReadString();
+                return{ConstantType::Str, s, (int)strlen(s)};
+            }
+            default:
+                assert(false && "corrupted!");
         }
     }
 
-    std::vector<uint32_t>& ReadCode(){
+    std::vector<uint32_t> ReadCode(){
         std::vector<uint32_t> codes;
 
         uint32_t size = ReadUint32();
@@ -89,13 +112,15 @@ private:
         return codes;
     }
 
-    std::vector<Constant>& ReadConstants(){
+    std::vector<Constant> ReadConstants(){
         std::vector<Constant> constants;
 
         uint32_t size = ReadUint32();
         for(int i = 0; i < size; ++i){
-            constants.push_back()
+            constants.push_back(ReadConstant());
         }
+
+        return constants;
     }
 
 public:

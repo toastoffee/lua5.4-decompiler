@@ -52,12 +52,24 @@ struct Header {
     double  luacNum;         // LUAC_NUM, 370.5(size depends on lua double size) to check float format, usually IEEE 754
 };
 
-enum class Constant {
+enum class ConstantType {
     Nil,
     Boolean,
     Number,
     Integer,
     Str
+};
+
+class Constant{
+private:
+    void* _buf{};
+    ConstantType _type;
+public:
+    Constant(ConstantType type, void* buf, int bufSize) : _type(type){
+        if(bufSize != 0){
+            memcpy(_buf, buf, bufSize);
+        }
+    }
 };
 
 struct LocalVar {
