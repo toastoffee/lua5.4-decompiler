@@ -123,6 +123,21 @@ private:
         return constants;
     }
 
+    std::vector<UpValue> ReadUpValues(){
+        std::vector<UpValue> upValues;
+
+        uint32_t size = ReadUint32();
+
+        for (int i = 0; i < size; ++i) {
+            upValues.push_back({
+                .Instack = ReadByte(),
+                .Idx = ReadByte()
+            });
+        }
+
+        return upValues;
+    }
+
 public:
 
     explicit BinaryChunkReader(byte* data) : _data(data) { }
@@ -162,6 +177,9 @@ public:
             .numParams = ReadByte(),
             .isVararg = ReadByte(),
             .maxStackSize = ReadByte(),
+            .constants = ReadConstants(),
+            .upValues = ReadUpValues(),
+            .prototypes = ReadPrototype(source),
 
         };
     }
