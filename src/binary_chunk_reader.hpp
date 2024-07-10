@@ -33,19 +33,22 @@ public:
     }
 
     uint64_t ReadUint64() {
-        uint64_t u = *_data;
+        uint64_t u;
+        memcpy(&u, _data, sizeof(uint64_t));
         _data += 8;
         return u;
     }
 
     int64_t ReadLuaInteger() {
-        int64_t i = *_data;
+        int64_t i;
+        memcpy(&i, _data, sizeof(int64_t));
         _data += 8;
         return i;
     }
 
     double ReadLuaNumber() {
-        double f = *_data;
+        double f;
+        memcpy(&f, _data, sizeof(double));
         _data += 8;
         return f;
     }
@@ -83,14 +86,8 @@ public:
         else if(ReadByte() != LUAC_FORMAT){
             throw "format mismatch!";
         }
-        else if((char*)ReadBytes(6) != LUAC_DATA){
+        else if(strcmp((char*)ReadBytes(6), LUAC_DATA) != 0){
             throw "corrupted!";
-        }
-        else if(ReadByte() != CINT_SIZE){
-            throw "int size mismatch!";
-        }
-        else if(ReadByte() != CSIZET_SIZE){
-            throw "size_t size mismatch!";
         }
         else if(ReadByte() != INSTRUCTION_SIZE){
             throw "instruction size mismatch!";
