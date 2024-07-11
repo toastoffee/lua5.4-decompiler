@@ -33,7 +33,7 @@ void PrintHeader(Prototype* prototype) {
 }
 
 void PrintCode(Prototype* p) {
-    printf("functions");
+    printf("functions\n");
     size_t codeCount = p->code.size();
 
     for (int i = 0; i < codeCount; ++i) {
@@ -41,9 +41,19 @@ void PrintCode(Prototype* p) {
     }
 }
 
+void PrintConstants(Prototype* p) {
+    size_t constantCount = p->constants.size();
+    printf("constants (%d):\n", (int)constantCount);
+
+    for (int i = 0; i < constantCount; ++i) {
+        printf("\t%d\t%s\n", i+1, p->constants[i].GetString());
+    }
+}
+
 void ListChunk(Prototype* prototype) {
     PrintHeader(prototype);
     PrintCode(prototype);
+    PrintConstants(prototype);
 }
 
 

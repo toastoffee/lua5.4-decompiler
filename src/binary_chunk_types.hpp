@@ -64,12 +64,38 @@ class Constant{
 private:
     void* _buf{};
     ConstantType _type;
+    int _bufSize;
 public:
+
     Constant(ConstantType type, void* buf, int bufSize) : _type(type){
+        _bufSize = bufSize;
         if(bufSize != 0){
             _buf = malloc(bufSize);
             memcpy(_buf, buf, bufSize);
         }
+    }
+
+    char* GetString() {
+        int size = 16;
+        char *s = new char[size];
+        switch (_type) {
+            case ConstantType::Nil:
+                snprintf(s, size, "nil");
+                break;
+            case ConstantType::Boolean:
+                snprintf(s, size, "%x", *(unsigned int*)_buf);
+                break;
+            case ConstantType::Number:
+                snprintf(s, size, "%lf", *(double*)_buf);
+                break;
+            case ConstantType::Integer:
+                snprintf(s, size, "%i", (int)*(size_t *)_buf);
+                break;
+            case ConstantType::Str:
+                snprintf(s, size, "\"%s\"", (char*)_buf);
+                break;
+        }
+        return s;
     }
 };
 
