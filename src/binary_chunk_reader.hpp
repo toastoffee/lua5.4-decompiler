@@ -66,13 +66,8 @@ private:
     }
 
     char* ReadString(){
-        uint8_t size = ReadByte();
-        if(size == 0){
-            return "";
-        }else if(size == 0xFF){
-            size = uint8_t(ReadUint64());
-        }
 
+        size_t size = ReadUnsigned() - 1; // the size should be (val - 1)
         char* str = (char*)ReadBytes(size);
         return str;
     }
@@ -117,7 +112,7 @@ private:
     std::vector<uint32_t> ReadCode(){
         std::vector<uint32_t> codes;
 
-        uint32_t size = ReadUint32();
+        size_t size = ReadUnsigned();
         for (int i = 0; i < size; ++i) {
             codes.push_back(ReadUint32());
         }
@@ -127,7 +122,7 @@ private:
     std::vector<Constant> ReadConstants(){
         std::vector<Constant> constants;
 
-        uint32_t size = ReadUint32();
+        size_t size = ReadUnsigned();
         for(int i = 0; i < size; ++i){
             constants.push_back(ReadConstant());
         }
@@ -138,12 +133,13 @@ private:
     std::vector<UpValue> ReadUpValues(){
         std::vector<UpValue> upValues;
 
-        uint32_t size = ReadUint32();
+        uint32_t size = ReadUnsigned();
 
         for (int i = 0; i < size; ++i) {
             upValues.push_back({
-                .Instack = ReadByte(),
-                .Idx = ReadByte()
+                .instack = ReadByte(),
+                .idx = ReadByte(),
+                .kind = ReadByte()
             });
         }
 
@@ -153,7 +149,7 @@ private:
     std::vector<Prototype*> ReadPrototypes(char *parentSource) {
         std::vector<Prototype*> protos;
 
-        uint32_t size = ReadUint32();
+        uint32_t size = ReadUnsigned();
 
         for (int i = 0; i < size; ++i) {
             protos.push_back(ReadPrototype(parentSource));
@@ -165,10 +161,10 @@ private:
     std::vector<uint32_t> ReadLineInfo() {
         std::vector<uint32_t> lineInfos;
 
-        uint32_t size = ReadUint32();
+        uint32_t size = ReadUnsigned();
 
         for (int i = 0; i < size; ++i) {
-            lineInfos.push_back(ReadUint32());
+            lineInfos.push_back(ReadByte());
         }
 
         return lineInfos;
@@ -225,6 +221,8 @@ public:
         assert(ReadLuaInteger() == LUAC_INT && "endianness mismatch");
 
         assert(ReadLuaNumber() == LUAC_NUM && "float format mismatch!");
+
+        ReadByte(); // Read size of upvalues
     }
 
     Prototype* ReadPrototype(char *parentSource = "") {
@@ -236,8 +234,8 @@ public:
 
         Prototype* ret = new Prototype{
             .source = source,
-            .lineDefined = ReadUint32(),
-            .lastLineDefined = ReadUint32(),
+            .lineDefined = (uint32_t)ReadUnsigned(),
+            .lastLineDefined = (uint32_t)ReadUnsigned(),
             .numParams = ReadByte(),
             .isVararg = ReadByte(),
             .maxStackSize = ReadByte(),

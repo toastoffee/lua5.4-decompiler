@@ -78,25 +78,32 @@ struct LocalVar {
     uint32_t endPc;
 };
 
+struct AbsLineInfo {
+    uint8_t pc;
+    uint8_t line;
+};
+
 struct UpValue {
-    byte Instack;
-    byte Idx;
+    byte instack;
+    byte idx;
+    byte kind;
 };
 
 struct Prototype {
-    char*                   source;
-    uint32_t                lineDefined;
-    uint32_t                lastLineDefined;
-    byte                    numParams;
-    byte                    isVararg;
-    byte                    maxStackSize;
-    std::vector<uint32_t>   code;
-    std::vector<Constant>   constants;
-    std::vector<UpValue>    upValues;
-    std::vector<Prototype*> prototypes;
-    std::vector<uint32_t>   lineInfo;
-    std::vector<LocalVar>   locVars;
-    std::vector<char*>      upValueNames;
+    char*                    source;
+    uint32_t                 lineDefined;
+    uint32_t                 lastLineDefined;
+    byte                     numParams;
+    byte                     isVararg;
+    byte                     maxStackSize;
+    std::vector<uint32_t>    code;
+    std::vector<Constant>    constants;
+    std::vector<UpValue>     upValues;
+    std::vector<Prototype*>  prototypes;
+    std::vector<uint32_t>    lineInfo;
+    std::vector<AbsLineInfo>
+    std::vector<LocalVar>    locVars;
+    std::vector<char*>       upValueNames;
 };
 
 struct binaryChunk {
