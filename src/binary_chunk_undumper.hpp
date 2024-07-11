@@ -15,9 +15,14 @@
 
 
 #include "binary_chunk_types.hpp"
+#include "binary_chunk_reader.hpp"
 
 Prototype* UnDump(byte data[]){
-
+    BinaryChunkReader reader(data);
+    reader.CheckHeader();
+    reader.SkipUpValueNum();
+    Prototype* proto = reader.ReadPrototype();
+    return proto;
 }
 
 

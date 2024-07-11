@@ -237,7 +237,10 @@ public:
 
         assert(ReadLuaNumber() == LUAC_NUM && "float format mismatch!");
 
-        ReadByte(); // Read size of upvalues
+    }
+
+    void SkipUpValueNum(){
+        ReadByte();
     }
 
     Prototype* ReadPrototype(char *parentSource = "") {

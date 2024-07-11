@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "src/binary_chunk_reader.hpp"
+#include "src/binary_chunk_undumper.hpp"
 
 int main() {
 
@@ -20,10 +20,8 @@ int main() {
     fread(source, sizeof(byte), fileSize, file);
     fclose(file);
 
-    BinaryChunkReader reader((byte*) source);
-
-    reader.CheckHeader();
-    Prototype* proto = reader.ReadPrototype();
+    Prototype p = *UnDump((byte*)source);
+    
 
     return 0;
 }
