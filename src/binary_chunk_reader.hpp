@@ -170,16 +170,31 @@ private:
         return lineInfos;
     }
 
+    std::vector<AbsLineInfo> ReadAbsLineInfos() {
+        std::vector<AbsLineInfo> absLineInfos;
+
+        uint32_t size = ReadUnsigned();
+
+        for (int i = 0; i < size; ++i) {
+            absLineInfos.push_back(AbsLineInfo{
+                .pc = ReadUnsigned(),
+                .line = ReadUnsigned()
+            });
+        }
+
+        return absLineInfos;
+    }
+
     std::vector<LocalVar> ReadLocVars() {
         std::vector<LocalVar> locVars;
 
-        uint32_t size = ReadUint32();
+        uint32_t size = ReadUnsigned();
 
         for (int i = 0; i < size; ++i) {
             locVars.push_back(LocalVar{
                 .varName = ReadString(),
-                .startPc = ReadUint32(),
-                .endPc = ReadUint32()
+                .startPc = (uint32_t)ReadUnsigned(),
+                .endPc = (uint32_t)ReadUnsigned()
             });
         }
 
@@ -189,7 +204,7 @@ private:
     std::vector<char*> ReadUpValueNames() {
         std::vector<char*> upValueNames;
 
-        uint32_t size = ReadUint32();
+        uint32_t size = ReadUnsigned();
 
         for (int i = 0; i < size; ++i) {
             upValueNames.push_back(ReadString());
@@ -243,7 +258,8 @@ public:
             .constants = ReadConstants(),
             .upValues = ReadUpValues(),
             .prototypes = ReadPrototypes(source),
-            .lineInfo = ReadLineInfo(),
+            .lineInfos = ReadLineInfo(),
+            .absLineInfos = ReadAbsLineInfos(),
             .locVars = ReadLocVars(),
             .upValueNames = ReadUpValueNames()
         };

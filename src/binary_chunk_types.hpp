@@ -67,6 +67,7 @@ private:
 public:
     Constant(ConstantType type, void* buf, int bufSize) : _type(type){
         if(bufSize != 0){
+            _buf = malloc(bufSize);
             memcpy(_buf, buf, bufSize);
         }
     }
@@ -79,8 +80,8 @@ struct LocalVar {
 };
 
 struct AbsLineInfo {
-    uint8_t pc;
-    uint8_t line;
+    size_t pc;
+    size_t line;
 };
 
 struct UpValue {
@@ -100,8 +101,8 @@ struct Prototype {
     std::vector<Constant>    constants;
     std::vector<UpValue>     upValues;
     std::vector<Prototype*>  prototypes;
-    std::vector<uint32_t>    lineInfo;
-    std::vector<AbsLineInfo>
+    std::vector<uint32_t>    lineInfos;
+    std::vector<AbsLineInfo> absLineInfos;
     std::vector<LocalVar>    locVars;
     std::vector<char*>       upValueNames;
 };
