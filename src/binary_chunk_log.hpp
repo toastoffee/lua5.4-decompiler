@@ -50,10 +50,32 @@ void PrintConstants(Prototype* p) {
     }
 }
 
+void PrintLocVars(Prototype* p) {
+    size_t locVarCount = p->locVars.size();
+    printf("locals (%d):\n", (int)locVarCount);
+
+    for (int i = 0; i < locVarCount; ++i) {
+        printf("\t%d\t%s\t%d\t%d\n",
+               i, p->locVars[i].varName, p->locVars[i].startPc+1, p->locVars[i].endPc+1);
+    }
+}
+
+void PrintUpValue(Prototype* p) {
+    size_t upValuesCount = p->upValues.size();
+    printf("upvalues (%d):\n", (int)upValuesCount);
+
+    for (int i = 0; i < upValuesCount; ++i) {
+        printf("\t%d\t%s\t%d\t%d\t%d\n",
+               i, p->upValueNames[i], p->upValues[i].instack, p->upValues[i].idx, p->upValues[i].kind);
+    }
+}
+
 void ListChunk(Prototype* prototype) {
     PrintHeader(prototype);
     PrintCode(prototype);
     PrintConstants(prototype);
+    PrintLocVars(prototype);
+    PrintUpValue(prototype);
 }
 
 
