@@ -32,9 +32,18 @@ void PrintHeader(Prototype* prototype) {
            (int)prototype->locVars.size(), (int)prototype->constants.size(), (int)prototype->prototypes.size());
 }
 
+void PrintCode(Prototype* p) {
+    printf("functions");
+    size_t codeCount = p->code.size();
+
+    for (int i = 0; i < codeCount; ++i) {
+        printf("\t%d\t[%d]\t0x%08x\n", i+1, p->lineInfos[i], p->code[i]);
+    }
+}
 
 void ListChunk(Prototype* prototype) {
     PrintHeader(prototype);
+    PrintCode(prototype);
 }
 
 
