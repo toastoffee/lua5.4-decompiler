@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "src/binary_chunk_undumper.hpp"
+#include "src/binary_chunk_log.hpp"
 
 int main() {
 
@@ -20,8 +21,9 @@ int main() {
     fread(source, sizeof(byte), fileSize, file);
     fclose(file);
 
-    Prototype p = *UnDump((byte*)source);
-    
+    Prototype* p = UnDump((byte*)source);
+
+    ListChunk(p);
 
     return 0;
 }

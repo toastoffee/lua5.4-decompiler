@@ -18,7 +18,23 @@
 void PrintHeader(Prototype* prototype) {
     const char* funcType = "main";
     if(prototype->lineDefined > 0) { funcType = "function"; }
-    
+
+    const char* varargFlag = "";
+    if(prototype->isVararg > 0) { varargFlag = "+"; }
+
+    printf("\n%s <%s:%d,%d> (%d instructions)\n",
+           funcType, prototype->source, prototype->lineDefined, (int)prototype->code.size());
+
+    printf("%d%s params, %d slots, %d upValues, ",
+           prototype->numParams, varargFlag, prototype->maxStackSize, (int)prototype->upValues.size());
+
+    printf("%d locals, %d constants, %d functions\n",
+           (int)prototype->locVars.size(), (int)prototype->constants.size(), (int)prototype->prototypes.size());
+}
+
+
+void ListChunk(Prototype* prototype) {
+    PrintHeader(prototype);
 }
 
 

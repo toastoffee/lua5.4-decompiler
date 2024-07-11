@@ -68,7 +68,12 @@ private:
     char* ReadString(){
 
         size_t size = ReadUnsigned() - 1; // the size should be (val - 1)
-        char* str = (char*)ReadBytes(size);
+//        char* str = (char*)ReadBytes(size);
+
+        char* str = (char*)malloc(size + 1);
+        strncpy(str, (char*)_data, size);
+        _data += size;
+        str[size] = '\0';
         return str;
     }
 
