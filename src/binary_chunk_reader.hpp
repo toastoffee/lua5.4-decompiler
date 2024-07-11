@@ -22,8 +22,20 @@ private:
 private:
     byte ReadByte() {
         byte b = *_data;
-        _data  += 1;
+        _data += 1;
         return b;
+    }
+
+    size_t ReadUnsigned() {
+        size_t x = 0;
+        uint8_t b;
+
+        do {
+            b = ReadByte();
+            x = (x << 7) | (b & 0x7f);
+        } while(((b & 0x80) == 0));
+
+        return x;
     }
 
     uint32_t ReadUint32() {
